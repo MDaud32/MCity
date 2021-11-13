@@ -39,15 +39,50 @@ const AddEditPlayers = (props) => {
       lastName: Yup.string().required('This input is required'),
       number: Yup.number()
         .required('This input is required')
-        .min('0', 'Minimum is zero')
-        .max('100', 'Maximum is 100'),
+        .min(0, 'Minimum is zero')
+        .max(100, 'Maximum is 100'),
       position: Yup.string().required('This input is required'),
     }),
+    onSubmit: (values) => {
+      submitForm(values);
+    },
   });
+
+  const submitForm = (values) => {
+    const dataToSubmit = values;
+    setLoading(true);
+
+    if (formType === 'Add') {
+      playersCollection
+        .add(dataToSubmit)
+        .then(() => {
+          showSuccessToast('Player Added');
+          formik.resetForm();
+          props.history.push('/admin_players');
+        })
+        .catch((error) => {
+          showErrorToast(error);
+        });
+    } else {
+    }
+  };
 
   useEffect(() => {
     const param = props.match.params.playerid;
     if (param) {
+      
+      playersCollection
+        .doc(param)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.data) {
+          } else {
+            showErrorToast('Sorry, Nothing was found');
+          }
+        }).catch(error => {
+          showErrorToast(error)
+        })
+
       setFormType('edit');
       setValue({ name: '' });
     } else {
@@ -92,6 +127,7 @@ const AddEditPlayers = (props) => {
               <div className='mb-5'>
                 <FormControl>
                   <TextField
+                    type='number'
                     id='number'
                     name='number'
                     variant='outlined'
