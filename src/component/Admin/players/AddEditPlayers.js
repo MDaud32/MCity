@@ -21,7 +21,7 @@ import { playersCollection, firebase } from '../../../firebase';
 
 const initialValues = {
   name: '',
-  lastName: '',
+  lastname: '',
   number: '',
   position: '',
 };
@@ -36,7 +36,7 @@ const AddEditPlayers = (props) => {
     initialValues: value,
     validationSchema: Yup.object({
       name: Yup.string().required('This input is required'),
-      lastName: Yup.string().required('This input is required'),
+      lastname: Yup.string().required('This input is required'),
       number: Yup.number()
         .required('This input is required')
         .min(0, 'Minimum is zero')
@@ -49,7 +49,7 @@ const AddEditPlayers = (props) => {
   });
 
   const submitForm = (values) => {
-    const dataToSubmit = values;
+    let dataToSubmit = values;
     setLoading(true);
 
     if (formType === 'Add') {
@@ -64,27 +64,38 @@ const AddEditPlayers = (props) => {
           showErrorToast(error);
         });
     } else {
+      playersCollection
+        .doc(props.match.params.playerid)
+        .update(dataToSubmit)
+        .then(() => {
+          showSuccessToast('Player Added');
+        })
+        .catch((error) => {
+          showErrorToast(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   };
 
   useEffect(() => {
     const param = props.match.params.playerid;
     if (param) {
-      
       playersCollection
         .doc(param)
         .get()
         .then((snapshot) => {
-          if (snapshot.data) {
+          if (snapshot.data()) {
+            setFormType('edit');
+            setValue(snapshot.data());
           } else {
             showErrorToast('Sorry, Nothing was found');
           }
-        }).catch(error => {
-          showErrorToast(error)
         })
-
-      setFormType('edit');
-      setValue({ name: '' });
+        .catch((error) => {
+          showErrorToast(error);
+        });
     } else {
       setFormType('Add');
       setValue(initialValues);
@@ -115,12 +126,12 @@ const AddEditPlayers = (props) => {
               <div className='mb-5'>
                 <FormControl>
                   <TextField
-                    id='lastName'
-                    name='lastName'
+                    id='lastname'
+                    name='lastname'
                     variant='outlined'
-                    placeholder='Enter your LastName'
-                    {...formik.getFieldProps('lastName')}
-                    {...textErrorHelper(formik, 'lastName')}
+                    placeholder='Enter your lastname'
+                    {...formik.getFieldProps('lastname')}
+                    {...textErrorHelper(formik, 'lastname')}
                   />
                 </FormControl>
               </div>
