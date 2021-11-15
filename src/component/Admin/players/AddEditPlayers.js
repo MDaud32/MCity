@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../../Hoc/AdminLayout';
+import FileUpload from '../../utils/FileUploader';
 import {
   showErrorToast,
   showSuccessToast,
@@ -108,7 +109,9 @@ const AddEditPlayers = (props) => {
         <div className='editplayers_dialog_wrapper'>
           <div>
             <form onSubmit={formik.handleSubmit}>
-              image
+              <FormControl>
+                <FileUpload dir={'player'} />
+              </FormControl>
               <hr />
               <h4>Player Info</h4>
               <div className='mb-5'>

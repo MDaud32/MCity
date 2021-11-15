@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
 
 // import { cityDb } from './temp/m-city-export';
 
@@ -14,7 +15,7 @@ const firebaseConfig = {
   measurementId: 'G-M50M49Q699',
 };
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig); 
+firebase.initializeApp(firebaseConfig);
 const DB = firebase.firestore();
 const matchesCollection = DB.collection('matches');
 const playersCollection = DB.collection('players');
