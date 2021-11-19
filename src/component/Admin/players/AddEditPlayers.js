@@ -25,12 +25,14 @@ const initialValues = {
   lastname: '',
   number: '',
   position: '',
+  image: '',
 };
 
 const AddEditPlayers = (props) => {
   const [loading, setLoading] = useState(false);
   const [formType, setFormType] = useState('');
   const [value, setValue] = useState(initialValues);
+  const [defaultImage, setDefaultImage] = useState('');
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -43,6 +45,7 @@ const AddEditPlayers = (props) => {
         .min(0, 'Minimum is zero')
         .max(100, 'Maximum is 100'),
       position: Yup.string().required('This input is required'),
+      image: Yup.string().required('This input is required'),
     }),
     onSubmit: (values) => {
       submitForm(values);
@@ -88,6 +91,16 @@ const AddEditPlayers = (props) => {
         .get()
         .then((snapshot) => {
           if (snapshot.data()) {
+            firebase
+              .storage()
+              .ref(this.props.dir)
+              .child(snapshot.data().image)
+              .getDownloadURL()
+              .then((url) => {
+                updateImageName(snapshot.data().image);
+                setDefaultImage(url);
+              });
+
             setFormType('edit');
             setValue(snapshot.data());
           } else {
@@ -103,14 +116,24 @@ const AddEditPlayers = (props) => {
     }
   }, [props.match.params.playerid]);
 
+  const updateImageName = (filename) => {
+    formik.setFieldValue('image', filename);
+  };
+
   return (
     <div>
       <AdminLayout title={formType === 'Add' ? 'Add Player' : 'Edit Player'}>
         <div className='editplayers_dialog_wrapper'>
           <div>
             <form onSubmit={formik.handleSubmit}>
-              <FormControl>
-                <FileUpload dir={'player'} />
+              <FormControl error={selectIsError(formik, 'image')}>
+                <FileUpload
+                  dir={'players'}
+                  defaultImage={defaultImage}
+                  defaultImageName={formik.values.image}
+                  filename={(filename) => updateImageName(filename)}
+                />
+                {selectErrorHelper(formik, 'image')}
               </FormControl>
               <hr />
               <h4>Player Info</h4>
