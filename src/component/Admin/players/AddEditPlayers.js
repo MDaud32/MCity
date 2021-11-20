@@ -120,6 +120,11 @@ const AddEditPlayers = (props) => {
     formik.setFieldValue('image', filename);
   };
 
+  const resetImage = () => {
+    formik.setFieldValue('image', '');
+    setDefaultImage('');
+  };
+
   return (
     <div>
       <AdminLayout title={formType === 'Add' ? 'Add Player' : 'Edit Player'}>
@@ -132,6 +137,7 @@ const AddEditPlayers = (props) => {
                   defaultImage={defaultImage}
                   defaultImageName={formik.values.image}
                   filename={(filename) => updateImageName(filename)}
+                  resetImage={() => resetImage()}
                 />
                 {selectErrorHelper(formik, 'image')}
               </FormControl>

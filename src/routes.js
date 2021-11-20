@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Footer from './component/footer';
 import Header from './component/header';
 import Home from './component/home';
+import TheTeam from './component/TheTeam';
 import SignIn from './component/Signin';
 import Dashboard from './component/Admin/Dashboard';
 import AuthGuard from './Hoc/Auth';
@@ -27,6 +28,7 @@ function Routes({ user }) {
         />
         <Route path='/admin_players' component={AuthGuard(AdminPlayers)} />
         <Route path='/dashboard' component={AuthGuard(Dashboard)} />
+        <Route path='/the_team' component={TheTeam} />
         <Route
           path='/sign_in'
           exact

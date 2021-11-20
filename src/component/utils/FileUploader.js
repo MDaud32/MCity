@@ -49,6 +49,15 @@ class FileUpload extends Component {
     return null;
   }
 
+  uploadAgain = () => {
+    this.setState({
+      name: '',
+      isUploading: false,
+      fileURL: '',
+    });
+    this.props.resetImage();
+  };
+
   render() {
     return (
       <div>
@@ -82,7 +91,7 @@ class FileUpload extends Component {
               alt='this is a player'
               src={this.state.fileURL}
             ></img>
-            <div className='remove' onClick={() => alert('removed')}>
+            <div className='remove' onClick={() => this.uploadAgain()}>
               Remove
             </div>
           </div>
